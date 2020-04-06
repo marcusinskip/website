@@ -29,6 +29,7 @@ All deliverables are contained in the sub directory deploy
 - SSL Certificate to provide encryption of data in transit 
 - Monitoring of resources including the database migration container to confirm it has run successfully
 - Make Terraform more DRY using for_each loops
+- Architectual diagrams
 
 ## Container image upload instructions
 
@@ -60,3 +61,13 @@ docker push <amazon_account_id>.dkr.ecr.<region>.amazonaws.com/ecr_repo
 
 8. To deploy newer versions of the container image follow steps 1 to 7.
 
+## Evaluation of "vendor lock-in" of the deployment
+
+This solution uses AWS managed products IAM, RDS, S3 and Fargate,  however with some reach it would be possible to replace these components with the equivalent from another cloud provider such as GCP or Azure (see table for these providers)
+
+| AWS            | Google          | Azure        |
+| :------------- | :----------:    | -----------: |
+| S3             | Cloud Storage   | Blob Storage |
+| Fargate        | Cloud Run       | ACI          |
+| SES            | Cloud Messaging | SendGrid     |
+| RDS            | Cloud SQL       | SQL DB       |
