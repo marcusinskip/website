@@ -20,7 +20,7 @@ All deliverables are contained in the sub directory deploy
 
 ## Future enhancements
 
-- Terraform configuration converted to Modules, thus allowing code reuse.
+- Terraform configuration converted to modules, thus allowing code reuse.
 - Secret information stored in AWS Secret Manager or AWS SSM Parameter Store and a small application placed in the Docker container to obtain the secret information. 
 - AWS Autoscaling group to scale up and down AWS Fargate resources depending on demand
 - AWS Code pipeline to provide a build process and automatic deployment
@@ -30,6 +30,7 @@ All deliverables are contained in the sub directory deploy
 - Monitoring of resources including the database migration container to confirm it has run successfully
 - Make Terraform more DRY using for_each loops
 - Architectual diagrams
+- Include unit tests for the modules
 
 ## Container image upload instructions
 
@@ -42,31 +43,34 @@ In the instructions replace <region> with the correct region defined in the Terr
 
 2. Push the image to the AWS ECR, to manually push the image from the command line (aws cli must be installed with appropriate authentication keys) and login into AWS ECR as follows: 
 
-aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <amazon_account_id>.dkr.ecr.<region>.amazonaws.com
+```aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <amazon_account_id>.dkr.ecr.<region>.amazonaws.com```
 
 4. Tag the docker image, for example:  
 
-docker tag webapp:1 <amazon_account_id>.dkr.ecr.<region>.amazonaws.com/ecr_repo
+```docker tag webapp:1 <amazon_account_id>.dkr.ecr.<region>.amazonaws.com/ecr_repo```
 
 5. Push the image:
 
-docker push <amazon_account_id>.dkr.ecr.<region>.amazonaws.com/ecr_repo
+```docker push <amazon_account_id>.dkr.ecr.<region>.amazonaws.com/ecr_repo```
 
 6. Update the Terraform variables.tf file variable app_image_version with the version number generated during the tag step 4. 
 
 7. Execute from the command line (amend the <plan_name> appropriately) : 
 
- terraform plan -o <plan_name>.tfplan
- terraform apply <plan_name>.tfplan
+```terraform plan -o <plan_name>.tfplan```
 
-8. To deploy newer versions of the container image follow steps 1 to 7.
+8. Execute apply to provision the cloud infrastructure 
+
+```terraform apply <plan_name>.tfplan```
+
+9. To deploy newer versions of the container image follow steps 1 to 7.
 
 ## Evaluation of "vendor lock-in" of the deployment
 
 This solution uses AWS managed products IAM, RDS, S3 and Fargate,  however with some reach it would be possible to replace these components with the equivalent from another cloud provider such as GCP or Azure (see table for these providers)
 
 | AWS            | Google          | Azure        |
-| :------------- | :----------:    | -----------: |
+|:-------------- | :-------------  | :----------  |
 | S3             | Cloud Storage   | Blob Storage |
 | Fargate        | Cloud Run       | ACI          |
 | SES            | Cloud Messaging | SendGrid     |
