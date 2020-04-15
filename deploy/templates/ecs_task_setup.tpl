@@ -2,7 +2,7 @@
   {
     "name": "${app_name}-setup",
     "image": "${image_repo}:${image_version}",
-    "command": ["sh", "-c", "sleep 5 && ./manage.py migrate && ./manage.py shell -c ${command}"],
+    "command": ["sh", "-c", "sleep 5 && ./manage.py migrate && ./manage.py shell -c \"from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com','123456')\""],
     "memory": 300,
     "logConfiguration": {
       "logDriver": "awslogs",
